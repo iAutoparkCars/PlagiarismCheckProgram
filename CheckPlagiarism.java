@@ -36,13 +36,10 @@ class CheckPlagiarism{
     */
     public void checkPlagiarism(String synonymsPath, String filepath1, String filepath2, int tupleSize){
 
-        // set is to know if the word has a synonym based on synonym file
-        Set<String> synSet = new HashSet<String>();
-
         // map is put the synonym in the correct group
         Map<String, String> synMap = new HashMap<String, String>();
 
-        buildDict(synSet, synMap, synonymsPath);
+        buildDict(synMap, synonymsPath);
 
         //System.out.println(synSet);
         //System.out.println(synMap);
@@ -53,8 +50,8 @@ class CheckPlagiarism{
         List<String> words2 = parseFile(filepath2);
 
         // for the words, replace the words that are synonyms
-        replaceWithSynonyms(words1, synSet, synMap);
-        replaceWithSynonyms(words2, synSet, synMap);
+        replaceWithSynonyms(words1, synMap);
+        replaceWithSynonyms(words2, synMap);
 
         // build tuples for file1 and 2
         Set<String> tuplesSet1 = new HashSet<String>();
@@ -78,11 +75,17 @@ class CheckPlagiarism{
             if (set2.contains(tuple)) count++;
         }
 
-        float percent = (count/set2.size()) * 100;
-        return String.format("%.0f%%", percent);
+        System.out.format("intersection count: %d, set1 size: %d, set2 size: %d \n", count, set1.size(), set2.size());
+
+        System.out.println("");
+        System.out.println(set1);
+        System.out.println(set2);
+
+        float percent = (count*100)/set2.size();
+        return String.format("%.1f%%", percent);
     }
 
-    public void replaceWithSynonyms(List<String> words, Set<String> set, Map<String, String> map){
+    public void replaceWithSynonyms(List<String> words, Map<String, String> map){
         if (words == null || words.size() <= 0) {
             System.err.println("File is empty or some error occured when parsing");
             return;
@@ -92,15 +95,18 @@ class CheckPlagiarism{
             String word = words.get(i);
 
             // replace the synonym with its "base" or parent word
-            if (hasSynonym(word, set)){ words.set(i, map.get(word)); }
+            if (hasSynonym(word, map)){ words.set(i, map.get(word)); }
 
         }
-        //System.out.println(words);
+        System.out.println(words);
     }
 
-    public boolean hasSynonym(String word, Set<String> set){ return set.contains(word); }
+    public boolean hasSynonym(String word, Map<String, String> map){ return map.containsKey(word); }
 
     public void buildTuples(List<String> words, Set<String> set, int tupleSize){
+
+        System.out.println("");
+
         List<String> tuple = new LinkedList<String>();
         // build initial window, then incrementally include the last, kill the first
 
@@ -119,6 +125,7 @@ class CheckPlagiarism{
             addTupleToSet(tuple, set);
         }
 
+        System.out.println("");
     }
 
     public void addTupleToSet(List<String> tuple, Set<String> set){
@@ -129,6 +136,7 @@ class CheckPlagiarism{
             sb.append(" "+tuple.get(i));
         }
 
+        System.out.println(sb.toString());
         set.add(sb.toString());
     }
 
@@ -152,8 +160,11 @@ class CheckPlagiarism{
             //String[] words = line.split("[\\p{IsPunctuation}\\p{IsWhite_Space}]+");
             String[] words = line.split("[^a-z'A-Z\\d]+");
 
+            //System.out.println(Arrays.toString(words));
+
             result.addAll(Arrays.asList(words));
         }
+
         //System.out.println(result);
         //System.out.println("");
 
@@ -161,7 +172,7 @@ class CheckPlagiarism{
     }
 
     // reads from synonym file line by line
-    public void buildDict(Set<String> set, Map<String, String> map, String filepath){
+    public void buildDict(Map<String, String> map, String filepath){
         File file = new File(filepath);
         Scanner cin = null;
 
@@ -174,18 +185,17 @@ class CheckPlagiarism{
 
         while(cin.hasNextLine()){
             line = cin.nextLine();
-            buildSetMap(set, map, line);
+            buildSetMap(map, line);
         }
     }
 
-    public void buildSetMap(Set<String> set, Map<String, String> map, String line){
+    public void buildSetMap(Map<String, String> map, String line){
         String[] words = line.split(" ");
         if (words.length <= 1) return;
 
         String base = words[0];   // children words mapped to same "base" word (first word)
 
         for (int i = 1; i < words.length; i++){
-            set.add(words[i]);
             map.put(words[i], base);
         }
     }
