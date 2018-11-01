@@ -40,4 +40,11 @@ java source/CommandLine source/synonyms.txt source/file1.txt source/file2.txt 3
   ```
 
 ### *Complexity analysis*
-  
+  #### Time
+    N = larger # of words from file1 and file2
+    M = size of the tuple, defaults to 3
+    runtime is **O(N)** if the tupleSize is default, where M can be treated as constant k
+    if tupleSize large, then O(N*M)
+        
+  #### Space
+    O(N*M)
