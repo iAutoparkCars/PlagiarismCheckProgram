@@ -44,15 +44,30 @@ class CheckPlagiarism{
 
         buildDict(synSet, synMap, synonymsPath);
 
+        // parse the file and get the words for each file
+        List<String> words1 = parseFile(filepath1);
+        List<String> words2 = parseFile(filepath2);
+
+        // for the words, replace the words that are synonyms
+        replaceWithSynonyms(words1, synSet, synMap);
+        replaceWithSynonyms(words2, synSet, synMap);
+
         // build tuples for file1 and 2
         Set<String> tuplesSet1 = new HashSet<String>();
         Set<String> tuplesSet2 = new HashSet<String>();
 
-        buildTuples(tuplesSet1, filepath1);
+        buildTuples(tuplesSet1, tupleSize, filepath1);
         //buildTuples(tuplesSet1);
     }
 
-    public void buildTuples(Set<String> tuples, String filepath){
+    // implement this function next
+    public void replaceWithSynonyms(List<String> words, Set<String> set, Map<String, String> map){
+
+    }
+
+    public boolean hasSynonym(String word, Set<String> set){ return set.contains(word); }
+
+    public void buildTuples(Set<String> tuples, int tupleSize, String filepath){
         List<String> words = parseFile(filepath);
 
     }
@@ -77,12 +92,12 @@ class CheckPlagiarism{
             //String[] words = line.split("[\\p{IsPunctuation}\\p{IsWhite_Space}]+");
             String[] words = line.split("[^a-z'A-Z\\d]+");
 
-            System.out.println(Arrays.toString(words));
+            //System.out.println(Arrays.toString(words));
 
-            //result.addAll(Arrays.asList(words));
+            result.addAll(Arrays.asList(words));
         }
 
-        //System.out.println(result);
+        System.out.println(result);
         return result;
     }
 
