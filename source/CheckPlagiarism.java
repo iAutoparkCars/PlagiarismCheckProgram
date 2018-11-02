@@ -4,12 +4,13 @@ import java.util.*;
 import java.io.*;
 
 class CheckPlagiarism{
+
+    // constant values
+    final String REGEX_RULE = "[^a-z'A-Z\\d]+";
+    final String PARSE_ERR = "File is empty or some error occured when parsing";
+
+    // empty constructor
     public CheckPlagiarism(){}
-    /*
-        I'll need to separate words by not only their space, but by punctuation as well
-
-    */
-
     /*
         Assumptions:
         1. assumes that input only takes words and chars, but not numbers
@@ -18,24 +19,14 @@ class CheckPlagiarism{
         3. tupleSize input is valid, so that tupleSize won't be larger than wordCounts in the files
     */
 
-    /*public static void main(String[] args){
-        CheckPlagiarism t = new CheckPlagiarism();
-
-        String synonymsFile = "synonyms.txt";
-        String file1 = "file1.txt";
-        String file2 = "file2.txt";
-        int tupleSize = 3;
-        t.checkPlagiarism(synonymsFile, file1, file2, tupleSize);
-
-        //t.buildDict(new HashSet<String>(), new HashMap<String, String>(), synonymsFile);
-        //t.parseFile(file1);
-    }*/
-
     /**
-    * @input: path to synonyms file, string1, string2, tuple size
-    * @output: will print percentage similarity
+    * @param: synonymsPath, path to synonyms file
+    * @param: filepath1, the target file
+    * @param: filepath2, the file to be compared with file 1
+    * @param: tupleSize, defaults to 3 if user specified no tuple size
+    * @output:  prints percentage similarity
     *
-    * Which is # matches/targetSet Size
+    *       checkPlagiarism is the main algorithm/routine
     */
     public void checkPlagiarism(String synonymsPath, String filepath1, String filepath2, int tupleSize){
 
@@ -43,10 +34,6 @@ class CheckPlagiarism{
         Map<String, String> synMap = new HashMap<String, String>();
 
         buildDict(synMap, synonymsPath);
-
-        //System.out.println(synSet);
-        //System.out.println(synMap);
-        //System.out.println("");
 
         // parse the file and get the words for each file
         List<String> words1 = parseFile(filepath1);
@@ -78,19 +65,13 @@ class CheckPlagiarism{
             if (set2.contains(tuple)) count++;
         }
 
-        System.out.format("intersection count: %d, set1 size: %d, set2 size: %d \n", count, set1.size(), set2.size());
-
-        System.out.println("");
-        System.out.println(set1);
-        System.out.println(set2);
-
         float percent = (count*100)/set2.size();
         return String.format("%.1f%%", percent);
     }
 
     public void replaceWithSynonyms(List<String> words, Map<String, String> map){
         if (words == null || words.size() <= 0) {
-            System.err.println("File is empty or some error occured when parsing");
+            System.err.println(PARSE_ERR);
             return;
         }
 
@@ -101,14 +82,11 @@ class CheckPlagiarism{
             if (hasSynonym(word, map)){ words.set(i, map.get(word)); }
 
         }
-        System.out.println(words);
     }
 
     public boolean hasSynonym(String word, Map<String, String> map){ return map.containsKey(word); }
 
     public void buildTuples(List<String> words, Set<String> set, int tupleSize){
-
-        System.out.println("");
 
         List<String> tuple = new LinkedList<String>();
         // build initial window, then incrementally include the last, kill the first
@@ -127,8 +105,6 @@ class CheckPlagiarism{
             tuple.remove(0);
             addTupleToSet(tuple, set);
         }
-
-        System.out.println("");
     }
 
     public void addTupleToSet(List<String> tuple, Set<String> set){
@@ -139,7 +115,7 @@ class CheckPlagiarism{
             sb.append(" "+tuple.get(i));
         }
 
-        System.out.println(sb.toString());
+        //System.out.println(sb.toString());
         set.add(sb.toString());
     }
 
@@ -160,17 +136,13 @@ class CheckPlagiarism{
 
             if (line.equals("")) continue;
 
-            //String[] words = line.split("[\\p{IsPunctuation}\\p{IsWhite_Space}]+");
-            String[] words = line.split("[^a-z'A-Z\\d]+");
-
-            //System.out.println(Arrays.toString(words));
+            String[] words = line.split(REGEX_RULE);
 
             result.addAll(Arrays.asList(words));
         }
 
         //System.out.println(result);
         //System.out.println("");
-
         return result;
     }
 
