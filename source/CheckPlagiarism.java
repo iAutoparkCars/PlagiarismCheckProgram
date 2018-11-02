@@ -119,7 +119,10 @@ class CheckPlagiarism{
         set.add(sb.toString());
     }
 
-    // test this function if it parses the file correctly
+    /**
+    *@param filepath, file containing words to parse
+    *@return A List<String> of words from the file
+    */
     public List<String> parseFile(String filepath){
         List<String> result = new LinkedList<String>();
 
@@ -146,7 +149,7 @@ class CheckPlagiarism{
         return result;
     }
 
-    // reads from synonym file line by line
+    // reads from synonym file line by line to create the Map of synonyms
     public void buildDict(Map<String, String> map, String filepath){
         File file = new File(filepath);
         Scanner cin = null;

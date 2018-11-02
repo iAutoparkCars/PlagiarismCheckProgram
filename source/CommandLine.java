@@ -4,7 +4,9 @@ import java.util.Arrays;
 
 public class CommandLine{
 
-    public final String INPUT_ERR = "Input error. Exiting.";
+    // global constants
+    private final String INPUT_ERR = "Input error. Exiting.";
+    private final int DEFAULT_SIZE = 3;
 
     public static void main(String[] args){
         new CommandLine().readCommandLine(args);
@@ -17,7 +19,7 @@ public class CommandLine{
         String synonymsFile = "";
         String file1 = "";
         String file2 = "";
-        int tupleSize = 3;
+        int tupleSize = DEFAULT_SIZE;
 
         if (args.length == 3 || args.length == 4){
              try{
