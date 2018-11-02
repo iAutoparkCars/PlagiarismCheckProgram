@@ -48,7 +48,7 @@ java source/CommandLine source/synonyms.txt source/file1.txt source/file2.txt 3
  if tupleSize is large, then O(N*M)
     
 #### Space
- O(N*M)
+ Same as time.
  
 ### *Design*
   1. Main algorithm is implemented in ```CheckPlagiarism.java``` with all its relevant subroutines
