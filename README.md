@@ -49,3 +49,9 @@ java source/CommandLine source/synonyms.txt source/file1.txt source/file2.txt 3
     
 #### Space
  O(N*M)
+ 
+### *Design*
+  1. Main algorithm is implemented in ```CheckPlagiarism.java``` with all its relevant subroutines
+  2. Command line logic is handled in ```CommandLine.java```
+  
+
