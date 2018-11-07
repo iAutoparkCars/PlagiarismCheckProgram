@@ -1,4 +1,4 @@
-## PlagiarismCheckProgram
+## PlagiarismCheckProgram, Source Files Gone For Now
 
 ### *Assumptions*
   1. assumes that input only takes words and chars, but not numbers
